@@ -1,8 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
-import leftFlower from '../assets/left.png';
-import rightFlower from '../assets/right.png';
 
 const Intro2 = () => {
   const navigate = useNavigate();

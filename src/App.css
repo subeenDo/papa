@@ -98,3 +98,29 @@ button:active {
 .floating-text {
   animation: floatUpDown 3s ease-in-out infinite;
 }
+
+/* 기본: 위 컴포넌트 사이즈 기준 */
+.button-touch { touch-action: manipulation; }
+
+/* 폭 1024px 이하에서 한 단계 축소 */
+@media (max-width: 1024px) {
+  .password-display { gap: 12px !important; }
+}
+
+/* 폭 820px 이하(세로 iPad 등)에서 키와 글자 더 축소 */
+@media (max-width: 820px) {
+  .button-touch {
+    width: 78px !important;
+    height: 78px !important;
+    font-size: 24px !important;
+  }
+}
+
+/* 폭 680px 이하(작은 태블릿/분할화면) */
+@media (max-width: 680px) {
+  .button-touch {
+    width: 68px !important;
+    height: 68px !important;
+    font-size: 22px !important;
+  }
+}

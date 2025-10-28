@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import symbolImg from '../assets/symbol.png';
 import '../App.css';
 
 const Password2 = () => {
@@ -10,7 +11,7 @@ const Password2 = () => {
   const correctPassword = '251031';
 
   const handleClick = (num) => {
-    const newInput = input + num;
+    const newInput = input + String(num);
     setInput(newInput);
     setPopIndex(newInput.length - 1);
     setTimeout(() => setPopIndex(null), 200);
@@ -29,18 +30,29 @@ const Password2 = () => {
   const handleBack = () => setInput((prev) => prev.slice(0, -1));
   const handleClear = () => setInput('');
 
+  // 포인터 통일 핸들러 (터치/펜에서 클릭 합성 방지)
+  const onPressNumber = (e, num) => { e.preventDefault(); handleClick(num); };
+  const onPressBack = (e) => { e.preventDefault(); handleBack(); };
+  const onPressClear = (e) => { e.preventDefault(); handleClear(); };
+
+  // 키패드 사이즈(필요하면 KEY만 조절)
+  const KEY = 90;      // 110 -> 90으로 축소
+  const GAP = 14;
+  const PADDING_Y = 28, PADDING_X = 20;
+
   const numBtnStyle = {
-    width: '110px',
-    height: '110px',
+    width: `${KEY}px`,
+    height: `${KEY}px`,
     backgroundColor: '#c7def8',
     border: '2px solid #7ea6e0',
     borderRadius: '12px',
-    fontSize: '30px',
+    fontSize: '26px', // 30 -> 26
     fontWeight: '700',
     color: '#004aad',
     boxShadow: 'inset 0 -2px 4px rgba(0,0,0,0.15)',
     cursor: 'pointer',
     transition: 'transform 0.1s ease',
+    touchAction: 'manipulation',
   };
 
   const funcBtnStyle = {
@@ -74,12 +86,9 @@ const Password2 = () => {
         }}
       >
         <img
-          src={require('../assets/symbol.png')}
+          src={symbolImg}
           alt="페이지 이미지"
-          style={{
-            width: '50%',
-            height: 'auto',
-          }}
+          style={{ width: '50%', height: 'auto' }}
         />
       </div>
 
@@ -92,13 +101,13 @@ const Password2 = () => {
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: '#7ea6e0',
-          padding: '40px', // 충분히 넓게
+          padding: '36px',       // 40 -> 36
           borderRadius: '12px',
           boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-          minWidth: '400px', // 너무 좁아지지 않게
+          minWidth: '360px',     // 400 -> 360
         }}
       >
-        <h2 style={{ fontSize: '2.5rem', color: '#fff', marginBottom: '40px' }}>
+        <h2 style={{ fontSize: '2.2rem', color: '#fff', marginBottom: '32px' }}>
           비밀번호를 입력하세요
         </h2>
 
@@ -108,22 +117,23 @@ const Password2 = () => {
           style={{
             display: 'flex',
             justifyContent: 'center',
-            gap: '16px',
-            marginBottom: '40px',
+            gap: '14px',
+            marginBottom: '28px',
           }}
+          aria-label="비밀번호 입력 진행도"
         >
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
               className={i === popIndex ? 'dot-pop' : ''}
               style={{
-                width: '24px',
-                height: '24px',
+                width: '22px',   // 24 -> 22
+                height: '22px',
                 borderRadius: '50%',
                 backgroundColor: i < input.length ? '#004aad' : '#e0f0ff',
                 transition: 'background-color 0.2s ease',
               }}
-            ></div>
+            />
           ))}
         </div>
 
@@ -131,11 +141,11 @@ const Password2 = () => {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 110px)',
-            gap: '18px',
+            gridTemplateColumns: `repeat(3, ${KEY}px)`,
+            gap: `${GAP}px`,
             justifyContent: 'center',
             backgroundColor: '#e6f0fb',
-            padding: '35px 25px',
+            padding: `${PADDING_Y}px ${PADDING_X}px`,
             borderRadius: '12px',
             boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
           }}
@@ -143,22 +153,41 @@ const Password2 = () => {
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
             <button
               key={num}
+              type="button"
               className="button-touch"
-              onClick={() => handleClick(num)}
-              onTouchStart={() => handleClick(num)}
+              onPointerDown={(e) => onPressNumber(e, num)}
               style={numBtnStyle}
+              aria-label={`${num} 입력`}
             >
               {num}
             </button>
           ))}
 
-          <button className="button-touch" onClick={handleBack} style={funcBtnStyle}>
+          <button
+            type="button"
+            className="button-touch"
+            onPointerDown={onPressBack}
+            style={funcBtnStyle}
+            aria-label="한 글자 지우기"
+          >
             ←
           </button>
-          <button className="button-touch" onClick={() => handleClick(0)} style={numBtnStyle}>
+          <button
+            type="button"
+            className="button-touch"
+            onPointerDown={(e) => onPressNumber(e, 0)}
+            style={numBtnStyle}
+            aria-label="0 입력"
+          >
             0
           </button>
-          <button className="button-touch" onClick={handleClear} style={resetBtnStyle}>
+          <button
+            type="button"
+            className="button-touch"
+            onPointerDown={onPressClear}
+            style={resetBtnStyle}
+            aria-label="전체 지우기"
+          >
             정정
           </button>
         </div>
